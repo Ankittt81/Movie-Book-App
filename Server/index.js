@@ -1,0 +1,16 @@
+const express = require("express");
+const app = express();
+const dbConfig = require("./config/dbConfig");
+const userRoutes = require("./routes/userRoutes");
+const cors = require("cors");
+app.use(cors({ origin: "*" })); //middleware
+app.use(express.json()); //middleware
+//all middleware called before router middleware
+
+
+app.use("/api/users", userRoutes);
+
+
+app.listen(8088, () => {
+  console.log("Server started at port 8088");
+});
