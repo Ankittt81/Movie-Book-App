@@ -23,3 +23,16 @@ export const LoginUser = async (values) => {
     console.log(error);
   }
 };
+
+//to get current or valid user
+
+export const GetCurrentUser=async ()=>{
+  try {
+    const response = await axiosInstance.get(
+      "http://localhost:8088/api/users/get-valid-user"
+    );
+    return response.data
+  } catch (error) {
+    console.log(error)
+  }
+}
