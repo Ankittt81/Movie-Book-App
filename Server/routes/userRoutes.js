@@ -2,7 +2,8 @@ const express = require("express");
 const router = express.Router();
 const User = require("../models/userModel");
 const bcrypt = require("bcrypt");
-const jwt=require('jsonwebtoken')
+const jwt = require("jsonwebtoken");
+const authMiddleware = require("../middlewares/authMiddleware");
 
 router.post("/register", async (req, res) => {
   try {
@@ -35,7 +36,7 @@ router.post("/register", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.email });
-    console.log(user)
+    console.log(user);
     if (!user) {
       res.send({
         success: false,
@@ -44,14 +45,14 @@ router.post("/login", async (req, res) => {
     }
 
     //validate password
-    
-     const validPassword = await bcrypt.compare(
-       req.body.password,
-       user.password
-     );
 
-    console.log(validPassword)
-    
+    const validPassword = await bcrypt.compare(
+      req.body.password,
+      user.password
+    );
+
+    console.log(validPassword);
+
     if (!validPassword) {
       res.status(401).send({
         success: false,
@@ -59,16 +60,28 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const jwtToken=jwt.sign({userId:user._id},'movies-booking',{expiresIn:'2d'})
+    const jwtToken = jwt.sign({ userId: user._id }, "movies-booking", {
+      expiresIn: "2d",
+    });
 
     res.send({
       success: true,
       message: "You've Successfully logged In",
-      token:jwtToken
+      token: jwtToken,
     });
   } catch (error) {
     console.error(error);
   }
+});
+
+router.get("/get-valid-user", authMiddleware, async (req, res) => {
+  const validuser = await User.findById(req.body.userId).select("-password");
+
+  res.send({
+    success: true,
+    message: "You are authorized to go to the protected route!",
+    data: validuser,
+  });
 });
 
 module.exports = router;
