@@ -6,14 +6,17 @@ import { LoginUser } from "../apiCalls/user";
 import { useNavigate } from "react-router-dom";
 function Login() {
   const navigate=useNavigate()
-
+  //console.log(localStorage.getItem("token"));
   const loginData=async (values)=>{
     try {
        const response = await LoginUser(values);
       if (response.success) {
         message.success("Successfully Registered");
         navigate("/");
-        localStorage.setItem("token",response.token)
+        console.log(response)
+        console.log(response.token);
+      
+        localStorage.setItem("token", response.token)
         
       } else {
         message.error(response.message || "Registration failed");

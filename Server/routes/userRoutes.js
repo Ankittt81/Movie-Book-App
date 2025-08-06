@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const jwtToken = jwt.sign({ userId: user._id }, "movies-booking", {
+    const jwtToken = jwt.sign({userId: user._id }, "movies-booking", {
       expiresIn: "2d",
     });
 
