@@ -32,15 +32,15 @@ function ProtectedRoute({ children }) {
         {
           label: (
             <span
-              onClick={() => {
-                if (user.role === "admin") {
-                  navigate("/admin");
-                } else if (user.role === "partner") {
-                  navigate("/partner");
-                } else {
-                  navigate("/profile");
-                }
-              }}
+              // onClick={() => {
+              //   if (user.role === "admin") {
+              //     navigate("/admin");
+              //   } else if (user.role === "partner") {
+              //     navigate("/partner");
+              //   } else {
+              //     navigate("/profile");
+              //   }
+              // }}
             >
               My Profile
             </span>
@@ -91,7 +91,6 @@ function ProtectedRoute({ children }) {
             style={{
               position: "sticky",
               top: 0,
-              zindex: 1,
               width: "100%",
               display: "flex",
               alignItems: "center",
