@@ -1,9 +1,12 @@
 import "./App.css";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Admin from "./Pages/Admin";
 import Home from "./Pages/Home";
 import Login from "./Pages/Login";
+import Partner from "./Pages/Partner";
 import Register from "./Pages/Register";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import User from "./Pages/User";
 
 function App() {
   return (
@@ -17,6 +20,30 @@ function App() {
             element={
               <ProtectedRoute>
                 <Home />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin"
+            element={
+              <ProtectedRoute>
+                <Admin />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/partner"
+            element={
+              <ProtectedRoute>
+                <Partner/>
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/user"
+            element={
+              <ProtectedRoute>
+                <User/>
               </ProtectedRoute>
             }
           />

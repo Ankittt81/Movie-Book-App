@@ -12,8 +12,9 @@ function Login() {
        const response = await LoginUser(values);
       if (response.success) {
         message.success("Successfully Registered");
+        localStorage.setItem("token", response.token);
         navigate("/");
-        localStorage.setItem("token",response.token)
+        
         
       } else {
         message.error(response.message || "Registration failed");

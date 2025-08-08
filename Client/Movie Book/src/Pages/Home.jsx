@@ -1,34 +1,37 @@
-import React from 'react'
-import { useEffect,useState } from 'react'
-import { GetAllMovies } from '../apiCalls/movies'
+import React from "react";
+import { useEffect, useState } from "react";
+import { GetAllMovies } from "../apiCalls/movies";
+import { Card ,Flex} from "antd";
 
-function Home() {
-  const [movies,setMovies]=useState([])
+const { Meta } = Card;
 
-  useEffect(async ()=>{
-    const response=await GetAllMovies()
-    console.log(response)
-    setMovies(response.data)
-  },[])
+const Home = () => {
+  const [movies, setMovies] = useState([]);
+
+  useEffect(async () => {
+    const response = await GetAllMovies();
+    console.log(response);
+    setMovies(response.data);
+  }, []);
+
   return (
-    <div>
+    <div className="flex">
       {movies &&
         movies.map((movieObj) => (
-          <Card
-            hoverable
-            style={{ width: 240 }}
-            cover={
-              <img
-                alt="example"
-                src={`${movieObj.poster}`}
-              />
-            }
-          >
-            <Meta title={`${movieObj.title}`} description={`{}`} />
-          </Card>
+          <div className="flex me-3 ">
+            <Card
+              hoverable
+              style={{
+                width: 240,
+              }}
+              cover={<img alt="example" src={`${movieObj.poster}`} />}
+            >
+              <Meta title={`${movieObj.title}`}  />
+            </Card>
+          </div>
         ))}
     </div>
   );
-}
+};
 
-export default Home
+export default Home;

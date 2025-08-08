@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,Link } from "react-router-dom";
 import { GetCurrentUser } from "../apiCalls/user";
 import { setUser } from "../redux/userSlice";
-import { Layout, message } from "antd";
+import { Layout, message,Menu } from "antd";
 
 import { Header } from "antd/es/layout/layout";
 import {
@@ -12,8 +12,6 @@ import {
   ProfileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-
-import { Link } from "react-router-dom";
 
 function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.user);
@@ -32,15 +30,15 @@ function ProtectedRoute({ children }) {
         {
           label: (
             <span
-              // onClick={() => {
-              //   if (user.role === "admin") {
-              //     navigate("/admin");
-              //   } else if (user.role === "partner") {
-              //     navigate("/partner");
-              //   } else {
-              //     navigate("/profile");
-              //   }
-              // }}
+              onClick={() => {
+                if (user.role === "admin") {
+                  navigate("/admin");
+                } else if (user.role === "partner") {
+                  navigate("/partner");
+                } else {
+                  navigate("/user");
+                }
+              }}
             >
               My Profile
             </span>
