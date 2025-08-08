@@ -7,6 +7,7 @@ module.exports = function (req, res, next) {
     req.body = verifiedToken;
     next();
   } catch (error) {
+    console.log(error);
     res.status(401).send({
       success: false,
       message: "Token Invalid",
