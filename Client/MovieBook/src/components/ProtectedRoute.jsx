@@ -4,10 +4,7 @@ import { useNavigate,Link } from "react-router-dom";
 import { GetCurrentUser } from "../apiCalls/user";
 import { setUser } from "../redux/userSlice";
 import { Layout, message,Menu } from "antd";
-<<<<<<< HEAD:Client/Movie Book/src/components/ProtectedRoute.jsx
-=======
 
->>>>>>> d3cf25fee35df65227d439a21684447d817ded9d:Client/MovieBook/src/components/ProtectedRoute.jsx
 
 import { Header } from "antd/es/layout/layout";
 import {

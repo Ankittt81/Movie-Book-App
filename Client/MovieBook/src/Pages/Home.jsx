@@ -26,7 +26,7 @@ function Home() {
             style={{ width: 240 }}
             cover={<img alt="example" src={`${movieObj.poster}`} />}
           >
-            <Meta title={`${movieObj.title}`} description={`{}`} />
+            <Meta title={`${movieObj.title}`}  />
           </Card>
         ))}
     </div>

@@ -14,14 +14,12 @@ function Login() {
         message.success("Successfully Registered");
         localStorage.setItem("token", response.token);
         navigate("/");
-<<<<<<< HEAD:Client/Movie Book/src/Pages/Login.jsx
-        
-=======
+
         console.log(response)
         console.log(response.token);
       
         localStorage.setItem("token", response.token)
->>>>>>> d3cf25fee35df65227d439a21684447d817ded9d:Client/MovieBook/src/Pages/Login.jsx
+
         
       } else {
         message.error(response.message || "Registration failed");
@@ -29,7 +27,7 @@ function Login() {
       console.log(response);
     } catch (error) {
       console.error(error);
-      message.error("An unexpected network error occurred.");
+      
     }
   }
   return (
