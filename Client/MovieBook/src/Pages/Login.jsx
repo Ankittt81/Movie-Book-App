@@ -16,11 +16,7 @@ function Login() {
         navigate("/");
 
         console.log(response)
-        console.log(response.token);
-      
-        localStorage.setItem("token", response.token)
-
-        
+        console.log(response.token);  
       } else {
         message.error(response.message || "Registration failed");
       }
