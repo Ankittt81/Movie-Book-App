@@ -27,9 +27,9 @@ function MovieList() {
         return { ...item, key: `movie${item._id}` };
       })
     );
-    console.log(allMovies);
     dispatch(hideLoading());
   };
+  console.log(movies)
   const tableHeadings = [
     {
       title: "Poster",

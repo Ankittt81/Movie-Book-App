@@ -1,32 +1,72 @@
 import React,{useState} from 'react'
 import {Form,Col,Row,Input,Select,Button,message,Modal} from 'antd'
+import { useDispatch } from 'react-redux'
+import moment from 'moment'
+import { hideLoading, showLoading } from '../../redux/loaderSlice'
+import { addMovie, updateMovie } from '../../apiCalls/movies'
 
 const {TextArea}=Input
-function MovieForm() {
-     const [isModalOpen, setIsModalOpen] = useState(false);
-     const showModal = () => {
-       setIsModalOpen(true);
-     };
-     const handleOk = () => {
-       setIsModalOpen(false);
-     };
+const MovieForm=({isModalOpen,setIsModalOpen,selectedMovie,setSelectedMovie,formType,getData})=> {
+  const dispatch=useDispatch()
+  const handleChange=(value)=>{
+    console.log(`selected ${value}`)
+  }
+  if(selectedMovie){
+    selectedMovie.releaseDate=moment(selectedMovie.releaseDate).format("YYYY-MM-DD")
+  }
+  console.log('this is from Form',selectedMovie)
+  const onFinish=async (values)=>{
+    try {
+      dispatch(showLoading())
+      let response=null
+      if(formType==='add'){
+        response =await addMovie(values)
+        setSelectedMovie(null)
+      }else{
+        response=await updateMovie({...values,movieId:selectedMovie._id})
+        selectedMovie(null)
+      }
+      console.log(response)
+      if(response.success){
+        getData()
+        message.success(response.message)
+        setIsModalOpen(false)
+      }else{
+        message.error(response.message)
+      }
+      
+      dispatch(hideLoading())
+    } catch (err) {
+      dispatch(hideLoading())
+      message.error(err.message)
+    }
+  }
+    //  const [isModalOpen, setIsModalOpen] = useState(false);
+    //  const showModal = () => {
+    //    setIsModalOpen(true);
+    //  };
+    //  const handleOk = () => {
+    //    setIsModalOpen(false);
+    //  };
      const handleCancel = () => {
        setIsModalOpen(false);
+       setSelectedMovie(null)
      };
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      {/* <Button type="primary" onClick={showModal}>
         Open Modal
-      </Button>
+      </Button> */}
       <Modal
-        title="Basic Modal"
-        closable={{ "aria-label": "Custom Close Button" }}
+      centered
+        title={formType==='add'?"Add movie":"Edit Movie"}
+        // closable={{ "aria-label": "Custom Close Button" }}
         open={isModalOpen}
-        onOk={handleOk}
+        // onOk={handleOk}
         onCancel={handleCancel}
-        width={900}
+        width={800}
       >
-        <Form layout="vertical" style={{ width: "100%" }}>
+        <Form layout="vertical" style={{ width: "100%" }} initialValues={selectedMovie} onFinish={onFinish}>
           <Row
             gutter={{
               xs: 6,
@@ -39,7 +79,7 @@ function MovieForm() {
               <Form.Item
                 label="Movie Name"
                 htmlFor="title"
-                name="Movie Name"
+                name="title"
                 className="d-block"
                 rules={[{ required: true, message: "Movie name is required!" }]}
               >
@@ -113,6 +153,7 @@ function MovieForm() {
                       id="language"
                       defaultValue="Select Language"
                       style={{ width: "100%", height: "45px" }}
+                      onChange={handleChange}
                       options={[
                         { value: "English", label: "English" },
                         { value: "Hindi", label: "Hindi" },
@@ -168,6 +209,7 @@ function MovieForm() {
                     <Select
                       defaultValue="Select Movie"
                       style={{ width: "100%" }}
+                      onChange={handleChange}
                       options={[
                         { value: "Action", label: "Action" },
                         { value: "Comedy", label: "Comedy" },
@@ -210,7 +252,7 @@ function MovieForm() {
             >
               Submit the Data
             </Button>
-            <Button className="mt-3" block>
+            <Button className="mt-3" block onClick={handleCancel}>
               Cancel
             </Button>
           </Form.Item>

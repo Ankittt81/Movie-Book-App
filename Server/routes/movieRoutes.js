@@ -73,7 +73,7 @@ router.get("/movie/:id", async (req, res) => {
 });
 
 //delete a movie
-router.post("/delete-movie", async (req, res) => {
+router.delete("/delete-movie", async (req, res) => {
   try {
     await Movie.findByIdAndDelete(req.body.movieId);
     console.log(req.body.movieId);
