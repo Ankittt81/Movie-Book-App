@@ -18,6 +18,40 @@ router.post('/add-theatre',async (req,res)=>{
 })
 
 
+//Admin-Get All theatres -Admin should get all the theatres from different owners
+router.get('./get-all-theatres',async (req,res)=>{
+    try {
+        const allTheatres=await Theatre.find().populate('owner')
+        res.send({
+            success:true,
+            message:'All thatres fetched!',
+            data:allTheatres
+        })
+    } catch (err) {
+        res.send({
+            success:false,
+            message:err.message
+        })
+    }
+})
+//Get the theatres of a specific owner
+router.get('/get-all-theatres-by-owner', async (req,res)=>{
+    try {
+        const allTheatres=await Theatre.find({owner:req.body.owner})
+        res.send({
+            success:true,
+            message:'All theatres fetched successfully!',
+            data:allTheatres
+        })
+    } catch (err) {
+        res.send({
+            success:false,
+            message:err.message
+        })
+    }
+})
+
+
 router.put("/update-theatre", async (req, res) => {
   try {
     await Theatre.findByIdAndUpdate(req.body.TheatreId,req.body)
