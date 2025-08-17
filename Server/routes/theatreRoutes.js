@@ -19,7 +19,7 @@ router.post('/add-theatre',async (req,res)=>{
 
 
 //Admin-Get All theatres -Admin should get all the theatres from different owners
-router.get('./get-all-theatres',async (req,res)=>{
+router.get('/get-all-theatres',async (req,res)=>{
     try {
         const allTheatres=await Theatre.find().populate('owner')
         res.send({

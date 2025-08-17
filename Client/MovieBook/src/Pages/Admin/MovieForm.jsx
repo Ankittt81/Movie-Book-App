@@ -24,7 +24,7 @@ const MovieForm=({isModalOpen,setIsModalOpen,selectedMovie,setSelectedMovie,form
         setSelectedMovie(null)
       }else{
         response=await updateMovie({...values,movieId:selectedMovie._id})
-        selectedMovie(null)
+        setSelectedMovie(null)
       }
       console.log(response)
       if(response.success){

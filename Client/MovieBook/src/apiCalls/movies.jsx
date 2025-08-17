@@ -42,7 +42,7 @@ export const updateMovie=async (payload)=>{
 
 export const deleteMovie = async (payload) => {
   try {
-    const response = await axiosInstance.delete(
+    const response = await axiosInstance.post(
       "http://localhost:8088/api/movies/delete-movie",
       payload
     );

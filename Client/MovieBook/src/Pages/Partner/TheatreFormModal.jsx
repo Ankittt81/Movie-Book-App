@@ -35,6 +35,7 @@ const TheatreFormModal = ({
         message.error(response.message);
       }
       dispatch(hideLoading());
+      setSelectedTheatre(null)
     } catch (err) {
       dispatch(hideLoading());
       message.error(err.message);

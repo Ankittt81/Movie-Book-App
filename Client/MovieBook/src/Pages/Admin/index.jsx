@@ -1,6 +1,7 @@
 import React from 'react'
 import { Tabs } from 'antd';
 import MovieList from './MovieList';
+import TheatreTable from './TheatreTable';
 function Admin() {
     const onChange = (key) => {
       console.log(key);
@@ -14,7 +15,7 @@ function Admin() {
       {
         key: "2",
         label: "Theatre List",
-        children: "Content of Tab Pane 2",
+        children: <TheatreTable/>,
       },
     ];
 
