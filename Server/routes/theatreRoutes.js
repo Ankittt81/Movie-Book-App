@@ -35,7 +35,7 @@ router.get('./get-all-theatres',async (req,res)=>{
     }
 })
 //Get the theatres of a specific owner
-router.get('/get-all-theatres-by-owner', async (req,res)=>{
+router.post('/get-all-theatres-by-owner', async (req,res)=>{
     try {
         const allTheatres=await Theatre.find({owner:req.body.owner})
         res.send({
@@ -54,7 +54,8 @@ router.get('/get-all-theatres-by-owner', async (req,res)=>{
 
 router.put("/update-theatre", async (req, res) => {
   try {
-    await Theatre.findByIdAndUpdate(req.body.TheatreId,req.body)
+    await Theatre.findByIdAndUpdate(req.body.theatreId,req.body)
+    console.log(req.body.theatreId);
     res.send({
       success: true,
       message: "New theatre has been updated!",
@@ -68,9 +69,9 @@ router.put("/update-theatre", async (req, res) => {
 });
 
 
-router.delete("/delete-theatre", async (req, res) => {
+router.delete("/delete-theatre/:theatreId", async (req, res) => {
   try {
-    await Theatre.findByIdAndDelete(req.body.TheatreId)
+    await Theatre.findByIdAndDelete(req.params.theatreId)
     res.send({
       success: true,
       message: "New theatre has been deleted!",

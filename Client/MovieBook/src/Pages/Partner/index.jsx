@@ -6,14 +6,14 @@ const Partner = () => {
     {
       key: "1",
       label: "Theatres",
-      children: <TheatreList />,
+      children: <TheatreList/>,
     },
   ];
 
   return (
     <>
-      <h1>This is Partner's Page</h1>
-      <Tabs defaultActiveKey="2" items={items} />
+      <h1> Partner Page</h1>
+      <Tabs defaultActiveKey="1" items={items} />
     </>
   );
 };

@@ -1,105 +1,160 @@
-import React, { useState,useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { hideLoading, showLoading } from '../../redux/loaderSlice'
-import { getAllTheatres } from '../../apiCalls/theatres'
-import { Button, message, Table } from 'antd'
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons'
-import TheatreFormModal from './TheatreFormModal'
-import DeleteTheatreModal from './DeleteTheatreModal'
-const TheatreList=()=> {
-    const {user}=useSelector((state)=>state.user)
-    console.log(user)
-    const [isModalOpen,setIsModalOpen]=useState(false)
-    const [isDeleteModalOpen,setIsDeleteModalOpen]=useState(false)
-    const [isShowModalOpen,setIsShowModalOpen]=useState(false)
-    const [selectedTheatre,setSelectedTheatre]=useState(null)
-    const [formType,setFormType]=useState('add')
-    const [theatres,SetTheatres]=useState(null)
-    const dispatch=useDispatch()
+import React, { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { hideLoading, showLoading } from "../../redux/loaderSlice";
+import { getAllTheatres } from "../../apiCalls/theatres";
+import { Button, message, Table } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import TheatreFormModal from "./TheatreFormModal";
+import DeleteTheatreModal from "./DeleteTheatreModal";
+const TheatreList = () => {
+  const { user } = useSelector((state) => state.user);
+  console.log(user);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [isShowModalOpen, setIsShowModalOpen] = useState(false);
+  const [selectedTheatre, setSelectedTheatre] = useState(null);
+  const [formType, setFormType] = useState("add");
+  const [theatres, SetTheatres] = useState(null);
+  const dispatch = useDispatch();
 
-    const getData=async ()=>{
-        try {
-            dispatch(showLoading())
-            const response=await getAllTheatres({owner:user._id})
-            if(response.success){
-                const allTheatres=response.getData
+  const getData = async () => {
+    try {
+      dispatch(showLoading());
+      const response = await getAllTheatres({ owner: user._id });
+      if (response.success) {
+        const allTheatres = response.data;
 
-                SetTheatres(allTheatres.map(function(item){
-                    return {...item,key:`theatre${item._id}`}
-                }))
-            }else{
-                message.error(response.message)
-            }
-            dispatch(hideLoading())
-        } catch (err) {
-            dispatch(hideLoading())
-            message.error(err.message)
-        }
+        SetTheatres(
+          allTheatres.map(function (item) {
+            return { ...item, key: `theatre${item._id}` };
+          })
+        );
+      } else {
+        message.error(response.message);
+      }
+      dispatch(hideLoading());
+    } catch (err) {
+      dispatch(hideLoading());
+      message.error(err.message);
     }
-    const columns = [
-      {
-        title: "Name",
-        dataIndex: "name",
-        key: "name",
+  };
+  const columns = [
+    {
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
+    },
+    {
+      title: "Address",
+      dataIndex: "address",
+      key: "address",
+    },
+    {
+      title: "Phone Number",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Status",
+      dataIndex: "status",
+      render: (status, data) => {
+        if (data.isActive) {
+          return "Approved";
+        } else {
+          return "Pending/Blocked";
+        }
       },
-      {
-        title: "Address",
-        dataIndex: "address",
-        key: "address",
+    },
+    {
+      title: "Action",
+      dataIndex: "action",
+      render: (text, data) => {
+        return (
+          <div className="d-flex align-items-center gap-10">
+            <Button
+              onClick={() => {
+                setIsModalOpen(true);
+                setFormType("edit");
+                setSelectedTheatre(data);
+              }}
+            >
+              <EditOutlined />
+            </Button>
+            <Button
+              onClick={() => {
+                setIsDeleteModalOpen(true);
+                setSelectedTheatre(data);
+              }}
+            >
+              <DeleteOutlined />
+            </Button>
+            {data.isActive && (
+              <Button
+                onClick={() => {
+                  setIsShowModalOpen(true);
+                  setSelectedTheatre(data);
+                }}
+              >
+                + Shows
+              </Button>
+            )}
+          </div>
+        );
       },
-      {
-        title: "Phone Number",
-        dataIndex: "phone",
-        key: "phone",
-      },
-      {
-        title: "Email",
-        dataIndex: "email",
-        key: "email",
-      },
-      {
-        title: "Status",
-        dataIndex: "status",
-        render: (status, data) => {
-          if (data.isActive) {
-            return "Approved";
-          } else {
-            return "Pending/Blocked";
-          }
-        },
-      },
-      {
-        title: "Action",
-        dataIndex: "action",
-        render: (text, data) => {
-          return (
-            <div className="d-flex align-items-center gap-10">
-             <Button onClick={()=>{setIsModalOpen(true) ;setFormType('edit');setSelectedTheatre(data)}}><EditOutlined/></Button>
-             <Button onClick={()=>{setIsDeleteModalOpen(true); setSelectedTheatre(data);}}><DeleteOutlined/></Button>
-             {data.isActive && <Button onClick={()=>{
-                setIsShowModalOpen(true); setSelectedTheatre(data)
-             }}>+ Shows</Button>}
-            </div>
-          );
-        },
-      },
-    ];
+    },
+  ];
 
-    useEffect(() => {
-      getData();
-    }, []);
+  useEffect(() => {
+    getData();
+  }, []);
 
   return (
     <>
-    <div className='d-flex justify-content-end'>
-        <Button type='primary' onClick={()=>{setIsModalOpen(true);setFormType('add')}}>Add Theatre</Button>
-    </div>
-    <Table dataSource={theatres} columns={columns}/>
-    {isModalOpen && <TheatreFormModal isModalOpen={isModalOpen} selectedTheatre={selectedTheatre} setSelectedTheatre={setSelectedTheatre} setIsModalOpen={setIsModalOpen} formType={formType} getData={getData} />}
-    {isDeleteModalOpen && <DeleteTheatreModal isDeleteModalOpen={isDeleteModalOpen} selectedTheatre={selectedTheatre} setIsDeleteModalOpen={setIsDeleteModalOpen} setSelectedTheatre={setSelectedTheatre} getData={getData} />}
-    {isShowModalOpen && <ShowModal isShowModalOpen={isShowModalOpen} setIsShowModalOpen={setIsShowModalOpen} selectedTheatre={selectedTheatre}/>}
+      <div className="d-flex justify-content-end">
+        <Button
+          type="primary"
+          onClick={() => {
+            setIsModalOpen(true);
+            setFormType("add");
+          }}
+        >
+          Add Theatre
+        </Button>
+      </div>
+      <Table dataSource={theatres} columns={columns} />
+      {isModalOpen && (
+        <TheatreFormModal
+          isModalOpen={isModalOpen}
+          selectedTheatre={selectedTheatre}
+          setSelectedTheatre={setSelectedTheatre}
+          setIsModalOpen={setIsModalOpen}
+          formType={formType}
+          getData={getData}
+        />
+      )}
+      {isDeleteModalOpen && (
+        <DeleteTheatreModal
+          isDeleteModalOpen={isDeleteModalOpen}
+          selectedTheatre={selectedTheatre}
+          setIsDeleteModalOpen={setIsDeleteModalOpen}
+          setSelectedTheatre={setSelectedTheatre}
+          getData={getData}
+        />
+      )}
+      {isShowModalOpen && (
+        <ShowModal
+          isShowModalOpen={isShowModalOpen}
+          setIsShowModalOpen={setIsShowModalOpen}
+          selectedTheatre={selectedTheatre}
+        />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default TheatreList
+export default TheatreList;

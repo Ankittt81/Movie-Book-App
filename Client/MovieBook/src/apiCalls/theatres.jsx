@@ -1,3 +1,4 @@
+
 import { axiosInstance } from "./index";
 
 
@@ -27,8 +28,9 @@ export const getAllTheatresForAdmin = async () => {
 //Get theatres of a specific owner
 export const getAllTheatres = async (payload) => {
   try {
-    const response = await axiosInstance.get(
-      "http://localhost:8088/api/theatre/get-all-theatres-by-owner",payload
+    const response = await axiosInstance.post(
+      "http://localhost:8088/api/theatre/get-all-theatres-by-owner",
+      payload
     );
     return response.data;
   } catch (err) {
@@ -50,12 +52,10 @@ export const UpdateTheatre = async (payload) => {
 };
 
 //Delete Theatre
-export const DeleteTheatre = async (payload) => {
+export const DeleteTheatre = async (theatreId) => {
   try {
     const response = await axiosInstance.delete(
-      "http://localhost:8088/api/theatre/delete-theatre",
-      payload
-    );
+      `http://localhost:8088/api/theatre/delete-theatre/${theatreId}`);
     return response.data;
   } catch (err) {
     return err.response;
