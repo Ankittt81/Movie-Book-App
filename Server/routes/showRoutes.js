@@ -12,11 +12,76 @@ router.post('/add-show', async (req,res)=>{
             success:true,
             message:'New show has been added!'
         })
+        console.log(req.body,res.success,res.message)
     } catch (err) {
         res.send({
             success:false,
             message:err.message
         })
+    }
+})
+
+
+//Get All show by theatre
+router.post('/get-all-shows-by-theatre', async(req,res)=>{
+    try {
+        const shows=await Show.find({theatre:req.body.theatreId}).populate('movie')
+        res.send({
+            success:true,
+            message:'All shows fetched',
+            data :shows
+        })
+    } catch (err) {
+        res.send({
+            success:false,
+            message:err.message
+        })
+    }
+})
+
+
+//Get all theatres by movie which has some shows
+router.post('/get-all-theatres-by-movie', async(req,res)=>{
+    try {
+        const {movie,date}=req.body
+        //First get all the shows of the selected date
+        const shows=await Show.find({movie,date}).populate('theatre')
+        //flter out the unique theatres now
+        let uniqueTheatres=[]
+        shows.forEach(show=>{
+            let isTheatre=uniqueTheatres.find(theatre=>theatre._id===show.theatre._id)
+            if(!isTheatre){
+                let showOfThisTheatre=shows.filter(showObj=>showObj.theatre._id==show.theatre._id)
+                uniqueTheatres.push({...show.theatre._doc,shows:showOfThisTheatre})
+            }
+        })
+        res.send({
+            success:true,
+            message:'All theatres fetched!',
+            data:uniqueTheatres
+        })
+    } catch (err) {
+        res.send({
+            success:false,
+            message:err.message
+        })
+    }
+})
+
+//get show by id
+router.post('/get-show-by-id',async(req,res)=>{
+    try {
+        const show=await Show.findById(req.body.showId).populate('movie').populate('theatre')
+        res.send({
+            success:true,
+            message:'Show fetched!',
+            data:show
+        })
+    } catch (err) {
+        res.send({
+            success:false,
+            message:err.message
+        })        
     }
 })
 
@@ -52,3 +117,6 @@ router.post('/delete-show',async (req,res)=>{
         })
     }
 })
+
+
+module.exports=router

@@ -7,6 +7,7 @@ import Partner from "./Pages/Partner";
 import Register from "./Pages/Register";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import User from "./Pages/User";
+import SingleMovie from "./Pages/SingleMovie";
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/movie/:id" element={<ProtectedRoute><SingleMovie/></ProtectedRoute>}/>
         </Routes>
       </BrowserRouter>
     </>
