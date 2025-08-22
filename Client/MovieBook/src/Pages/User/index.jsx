@@ -1,10 +1,20 @@
-import React from 'react'
+import {Tabs} from 'antd'
+import Booking from './Bookings'
 
-function User() {
+
+const User=()=> {
+  const items=[
+    {
+      key:'1',
+      label:'Bookings',
+      children:<Booking/>
+    }
+  ]
   return (
-    <div>
-        <h1>This is user's page</h1>
-    </div>
+    <>
+    <h1>User Profile Page</h1>
+    <Tabs defaultActiveKey='2' items={items}/>
+    </>
     
   )
 }

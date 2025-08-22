@@ -7,10 +7,10 @@ const bookingSchema=new mongoose.Schema({
     },
     user:{
         type:mongoose.Schema.Types.ObjectId,
-        ref:'user'
+        ref:'User'
     },
     seats:{
-        types:Array,
+        type:Array,
         required:true
     },
     transactionId:{

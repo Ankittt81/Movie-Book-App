@@ -6,6 +6,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { message, Card, Row, Col, Button } from "antd";
 import moment from "moment";
 import StripeCheckout from "react-stripe-checkout";
+import { bookShow, makePayment } from "../apiCalls/booking";
 // import { bookShow, makePayment } from "../apiCalls/bookings";
 
 const BookShow = () => {
@@ -32,6 +33,46 @@ const BookShow = () => {
       dispatch(hideLoading());
     }
   };
+
+  
+    //Function to Book
+    const book=async (transactionId)=>{
+      try {
+        dispatch(showLoading())
+        const response=await bookShow({show:params.id,transactionId,seats:selectedSeats,user:user._id})
+        if(response.success){
+          message.success('Show Booking done!')
+          navigate('/profile')
+        }else{
+          message.error(response.message)
+        }
+        dispatch(hideLoading())
+      } catch (err) {
+        message.error(err.message);
+        dispatch(hideLoading());
+      }
+    }
+
+    //Function  to generate payment token and pass it to server
+    
+    const onToken=async(token)=>{
+      try {
+        dispatch(showLoading())
+        const response=await makePayment(token,selectedSeats.length*show.ticketPrice*100)
+        if(response.success){
+          message.success(response.message)
+          book(response.data)
+          console.log(response)
+        }else{
+          message.error(response.message)
+        }
+        dispatch(hideLoading())
+      } catch (err) {
+         message.error(err.message);
+         dispatch(hideLoading());
+      }
+    }
+  
 
   const getSeats = () => {
     if (!show) return null;
@@ -197,7 +238,8 @@ const BookShow = () => {
               {selectedSeats.length > 0 && (
                 <StripeCheckout
                   amount={selectedSeats.length * show.ticketPrice * 100}
-                  stripeKey="pk_test_51JKPQWSJULHQ0FL7VOkMrOMFh0AHMoCFit29EgNlVRSvFkDxSoIuY771mqGczvd6bdTHU1EkhJpojOflzoIFGmj300Uj4ALqXa"
+                  stripeKey="pk_test_51RyeysBJputbpxEHgibaQeadVp9VW3PAtA0UL5NDx2LaZ8qJsfHujQiA5Ap9Imrci3Ll8C0XzNvxzIhTGfM0sNMF00DxvwXzZN"
+                  token={onToken}
                 >
                   {/* Use this one in some situation=> pk_test_eTH82XLklCU1LJBkr2cSDiGL001Bew71X8  */}
                   <div className="payment-button-container">
@@ -304,7 +346,7 @@ const BookShow = () => {
         .seat-btn.booked {
           background-color: #f5f5f5;
           cursor: not-allowed;
-          color: #999;
+          color: #d33c3cff;
           border-color: #e0e0e0;
           box-shadow: none;
         }

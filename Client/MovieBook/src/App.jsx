@@ -65,6 +65,7 @@ function App() {
               </ProtectedRoute>
             }
           />
+          <Route path="/profile" element={<ProtectedRoute><User/></ProtectedRoute>}/>
         </Routes>
       </BrowserRouter>
     </>
