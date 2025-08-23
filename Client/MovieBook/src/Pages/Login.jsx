@@ -22,7 +22,7 @@ function Login() {
       }
       console.log(response);
     } catch (error) {
-      console.error(error);
+      message.error(response.message || "Registration failed");
       
     }
   }

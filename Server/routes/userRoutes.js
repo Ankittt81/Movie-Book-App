@@ -60,7 +60,7 @@ router.post("/login", async (req, res) => {
       });
     }
 
-    const jwtToken = jwt.sign({userId: user._id }, "movies-booking", {
+    const jwtToken = jwt.sign({userId: user._id }, process.env.JWT_SECRET, {
       expiresIn: "2d",
     });
 
@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/get-valid-user", authMiddleware, async (req, res) => {
-  const validuser = await User.findById(req.body.userId).select("-password");
+  const validuser = await User.findById(req.userId).select("-password");
 
   res.send({
     success: true,

@@ -1,16 +1,27 @@
 const mongoose = require('mongoose');
 
-const dbString =
- 'mongodb+srv://ankitkumarakki85:9FBV0r09uPYqEeW0@cluster0.hsyxlda.mongodb.net/BMS?retryWrites=true&w=majority&appName=Cluster0'
+const dbURL =process.env.DB_URL
 
-mongoose.connect(dbString);
+const connectDB=async ()=>{
+  try {
+    await mongoose.connect(dbURL);
+    console.log('Connected to Db')
+  } catch (err) {
+    console.log('Error connecting to DB',err)
+  }
+}
 
-const connection = mongoose.connection;
 
-connection.on("connected", () => {
-  console.log("connection Successfull");
-});
+// await mongoose.connect(dbURL);
+// const connection = mongoose.connection;
 
-connection.on("error", () => {
-  console.log("connection unsuccesssful");
-});
+// connection.on("connected", () => {
+//   console.log("connection Successfull");
+// });
+
+// connection.on("error", () => {
+//   console.log("connection unsuccesssful");
+// });
+
+
+module.exports=connectDB

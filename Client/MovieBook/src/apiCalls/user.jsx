@@ -3,7 +3,7 @@ import { axiosInstance } from ".";
 export const RegisterUser = async (values) => {
   try {
     const response = await axiosInstance.post(
-      "http://localhost:8088/api/users/register",
+      "/users/register",
       values
     );
     return response.data;
@@ -15,7 +15,7 @@ export const RegisterUser = async (values) => {
 export const LoginUser = async (values) => {
   try {
     const response = await axiosInstance.post(
-      "http://localhost:8088/api/users/login",
+      "/users/login",
       values
     );
     return response.data;
@@ -29,7 +29,7 @@ export const LoginUser = async (values) => {
 export const GetCurrentUser=async ()=>{
   try {
     const response = await axiosInstance.get(
-      "http://localhost:8088/api/users/get-valid-user"
+      "/users/get-valid-user"
     );
     return response.data
   } catch (error) {

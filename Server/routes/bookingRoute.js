@@ -1,11 +1,9 @@
 const router = require("express").Router();
-const stripe = require("stripe")(
-  "sk_test_51RyeysBJputbpxEHRZnqHbVDeZMlen0R0TlWs9eyhXU3y1a2llydm0fNRpUkLIePXkn0fs80AeyBsxMfmEM5z34T003okbHhn5"
-);
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY)
 
 const authMiddleware = require("../middlewares/authMiddleware");
 const Booking = require("../models/bookingModel");
-const show = require("../models/showModel");
+const Show = require("../models/showModel");
 
 router.post("/make-payment", async (req, res) => {
   try {
@@ -19,7 +17,7 @@ router.post("/make-payment", async (req, res) => {
     //verify the payment
     const paymentIntent = await stripe.paymentIntents.create({
       amount: amount,
-      currency: useDebugValue,
+      currency: 'usd',
       customer: customer.id,
       payment_method_types: ["card"],
       receipt_email: token.email,
@@ -42,7 +40,7 @@ router.post("/make-payment", async (req, res) => {
 
 //Create a booking after the payment
 
-router.post("book-show", async (req, res) => {
+router.post("/book-show", async (req, res) => {
   try {
     const newBooking = new Booking(req.body);
     await newBooking.save();
@@ -66,9 +64,9 @@ router.post("book-show", async (req, res) => {
   }
 });
 
-router.get("get-all-bookings", authMiddleware, async (req, res) => {
+router.get("/get-all-bookings", authMiddleware, async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.body.userId })
+    const bookings = await Booking.find({ user: req.userId })
       .populate("user")
       .populate("show")
       .populate({

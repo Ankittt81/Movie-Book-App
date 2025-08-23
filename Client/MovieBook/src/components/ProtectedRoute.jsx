@@ -13,6 +13,7 @@ import {
   ProfileOutlined,
   UserOutlined,
 } from "@ant-design/icons";
+import { hideLoading, showLoading } from "../redux/loaderSlice";
 
 function ProtectedRoute({ children }) {
   const { user } = useSelector((state) => state.user);
@@ -64,6 +65,7 @@ function ProtectedRoute({ children }) {
   ];
   const getValidUser = async () => {
     try {
+      dispatch(showLoading())
       const response = await GetCurrentUser();
       console.log(response);
       dispatch(setUser(response.data));
@@ -72,7 +74,10 @@ function ProtectedRoute({ children }) {
     } catch (error) {
       dispatch(setUser(null));
       message.error(error.message);
+      localStorage.removeItem('token')
+      navigate('/login')
     }
+    dispatch(hideLoading())
   };
   useEffect(() => {
     if (localStorage.getItem("token")) {
