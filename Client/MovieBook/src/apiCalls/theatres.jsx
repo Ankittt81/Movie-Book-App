@@ -5,7 +5,7 @@ import { axiosInstance } from "./index";
 export const addTheatre=async (payload)=>{
     try {
         const response = await axiosInstance.post(
-          "http://localhost:8088/api/theatre/add-theatre",payload
+          "/theatre/add-theatre",payload
         );
         return response.data
     } catch (err) {
@@ -18,7 +18,7 @@ export const addTheatre=async (payload)=>{
 export const getAllTheatresForAdmin = async () => {
   try {
     const response = await axiosInstance.get(
-      "http://localhost:8088/api/theatre/get-all-theatres");
+      "/theatre/get-all-theatres");
     return response.data;
   } catch (err) {
     return err.response;
@@ -29,7 +29,7 @@ export const getAllTheatresForAdmin = async () => {
 export const getAllTheatres = async (payload) => {
   try {
     const response = await axiosInstance.post(
-      "http://localhost:8088/api/theatre/get-all-theatres-by-owner",
+      "/theatre/get-all-theatres-by-owner",
       payload
     );
     return response.data;
@@ -42,7 +42,7 @@ export const getAllTheatres = async (payload) => {
 export const UpdateTheatre = async (payload) => {
   try {
     const response = await axiosInstance.put(
-      "http://localhost:8088/api/theatre/update-theatre",
+      "/theatre/update-theatre",
       payload
     );
     return response.data;
@@ -55,7 +55,7 @@ export const UpdateTheatre = async (payload) => {
 export const DeleteTheatre = async (theatreId) => {
   try {
     const response = await axiosInstance.delete(
-      `http://localhost:8088/api/theatre/delete-theatre/${theatreId}`);
+      `/theatre/delete-theatre/${theatreId}`);
     return response.data;
   } catch (err) {
     return err.response;

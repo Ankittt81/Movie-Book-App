@@ -26,7 +26,7 @@ function ProtectedRoute({ children }) {
       icon: <HomeOutlined />,
     },
     {
-      label: `${user ? user.name : null}`,
+      label: `${user ? user.name : ""}`,
       icon: <UserOutlined />,
       children: [
         {
@@ -69,15 +69,15 @@ function ProtectedRoute({ children }) {
       const response = await GetCurrentUser();
       console.log(response);
       dispatch(setUser(response.data));
-
+      dispatch(hideLoading())
       //hide Loader
     } catch (error) {
       dispatch(setUser(null));
-      message.error(error.message);
+      message.error('Please login again');
       localStorage.removeItem('token')
       navigate('/login')
+      dispatch(hideLoading());
     }
-    dispatch(hideLoading())
   };
   useEffect(() => {
     if (localStorage.getItem("token")) {

@@ -1,5 +1,6 @@
 import { axiosInstance } from ".";
 
+//Registration flow
 export const RegisterUser = async (values) => {
   try {
     const response = await axiosInstance.post(
@@ -12,6 +13,7 @@ export const RegisterUser = async (values) => {
   }
 };
 
+//Login
 export const LoginUser = async (values) => {
   try {
     const response = await axiosInstance.post(
@@ -28,7 +30,7 @@ export const LoginUser = async (values) => {
 
 export const GetCurrentUser=async ()=>{
   try {
-    const response = await axiosInstance.get(
+    const response = await axiosInstance.put(
       "/users/get-valid-user"
     );
     return response.data

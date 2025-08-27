@@ -61,11 +61,18 @@ function App() {
             path="/book-show/:id"
             element={
               <ProtectedRoute>
-                <BookShow/>
+                <BookShow />
               </ProtectedRoute>
             }
           />
-          <Route path="/profile" element={<ProtectedRoute><User/></ProtectedRoute>}/>
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <User />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </BrowserRouter>
     </>

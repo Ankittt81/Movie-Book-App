@@ -5,7 +5,7 @@ import { axiosInstance } from "./index";
 export const GetAllMovies = async ()=>{
     try {
         const response = await axiosInstance.get(
-          "http://localhost:8088/api/movies/get-all-movies"
+          "/movies/get-all-movies"
         );
         return response.data
     } catch (error) {
@@ -17,7 +17,7 @@ export const GetAllMovies = async ()=>{
 export const addMovie=async(values)=>{
     try {
         const response = await axiosInstance.post(
-          "http://localhost:8088/api/movies/add-movie",values
+          "/movies/add-movie",values
         );
         return response.data
     } catch (error) {
@@ -30,7 +30,7 @@ export const addMovie=async(values)=>{
 export const updateMovie=async (payload)=>{
     try {
         const response = await axiosInstance.put(
-          "http://localhost:8088/api/movies/update-movie",payload
+          "/movies/update-movie",payload
         );
         return response.data
     } catch (err) {
@@ -43,7 +43,7 @@ export const updateMovie=async (payload)=>{
 export const deleteMovie = async (payload) => {
   try {
     const response = await axiosInstance.post(
-      "http://localhost:8088/api/movies/delete-movie",
+      "/movies/delete-movie",
       payload
     );
     return response.data;
@@ -56,7 +56,7 @@ export const deleteMovie = async (payload) => {
 export const getMovieById = async (id) => {
   try {
     const response = await axiosInstance.get(
-      `http://localhost:8088/api/movies/movie/${id}`
+      `/movies/movie/${id}`
     );
     return response.data;
   } catch (err) {

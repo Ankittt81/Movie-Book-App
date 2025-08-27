@@ -10,7 +10,7 @@ router.post("/register", async (req, res) => {
     // check if user already exists
     const userExists = await User.findOne({ email: req.body.email });
     if (userExists) {
-      res.send({
+     return res.send({
         success: false,
         message: "User Already Exists",
       });
@@ -21,7 +21,8 @@ router.post("/register", async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = bcrypt.hashSync(req.body.password, salt);
     req.body.password = hashedPassword;
-    const newUser = await User(req.body);
+
+    const newUser = new User(req.body);
     await newUser.save();
 
     res.send({
@@ -29,7 +30,7 @@ router.post("/register", async (req, res) => {
       message: "User Registered Successfully",
     });
   } catch (err) {
-    console.log(err);
+   return res.status(500).send(err.message)
   }
 });
 
@@ -38,7 +39,7 @@ router.post("/login", async (req, res) => {
     const user = await User.findOne({ email: req.body.email });
     console.log(user);
     if (!user) {
-      res.send({
+     return res.send({
         success: false,
         message: "user does not exist Please Register",
       });
@@ -51,12 +52,11 @@ router.post("/login", async (req, res) => {
       user.password
     );
 
-    console.log(validPassword);
 
     if (!validPassword) {
-      res.status(401).send({
+     return res.status(401).send({
         success: false,
-        message: "sorry Invalid Password Entered",
+        message: "Password is incorrect",
       });
     }
 
@@ -69,13 +69,13 @@ router.post("/login", async (req, res) => {
       message: "You've Successfully logged In",
       token: jwtToken,
     });
-  } catch (error) {
-    console.error(error);
+  } catch (err) {
+    return res.status(500).send(err.message)
   }
 });
 
 router.get("/get-valid-user", authMiddleware, async (req, res) => {
-  const validuser = await User.findById(req.userId).select("-password");
+  const validuser = await User.findById(req.body.userId).select("-password");
 
   res.send({
     success: true,

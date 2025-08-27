@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { message,Row,Col,Input } from "antd";
-import { GetAllMovies } from "../apiCalls/movies";
-import { hideLoading,showLoading } from "../redux/loaderSlice";
+import { GetAllMovies } from "../../apiCalls/movies";
+import { hideLoading,showLoading } from "../../redux/loaderSlice";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SearchOutlined } from "@ant-design/icons";
