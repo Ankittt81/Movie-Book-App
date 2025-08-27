@@ -15,6 +15,7 @@ export const RegisterUser = async (values) => {
 
 //Login
 export const LoginUser = async (values) => {
+  console.log(values);
   try {
     const response = await axiosInstance.post(
       "/users/login",
@@ -30,7 +31,7 @@ export const LoginUser = async (values) => {
 
 export const GetCurrentUser=async ()=>{
   try {
-    const response = await axiosInstance.put(
+    const response = await axiosInstance.get(
       "/users/get-valid-user"
     );
     return response.data

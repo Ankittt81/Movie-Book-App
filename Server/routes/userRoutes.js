@@ -75,7 +75,7 @@ router.post("/login", async (req, res) => {
 });
 
 router.get("/get-valid-user", authMiddleware, async (req, res) => {
-  const validuser = await User.findById(req.body.userId).select("-password");
+  const validuser = await User.findById(req.userId).select("-password");
 
   res.send({
     success: true,
