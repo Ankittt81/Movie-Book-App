@@ -1,28 +1,36 @@
 import axios from "axios";
 
-//Create an Axios instance
 export const axiosInstance = axios.create({
-  baseURL: "http://localhost:8088/api",
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:8080",
   headers: { "Content-Type": "application/json" },
 });
 
-// we will use axios interceptors to add token to every request
-
-//Add a request interceptor
+// attach the token to every request
 axiosInstance.interceptors.request.use(
   (config) => {
-    //Get the token from local storage
     const token = localStorage.getItem("token");
-
-    //Add the token to the Authorization header if it exists
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-
+// turn every failure into an Error carrying the backend's message,
+// so pages only need: catch (err) { message.error(err.message) }
+axiosInstance.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    let text = error.response?.data?.message;
+    if (!text) {
+      if (!error.response) text = "Cannot reach the server";
+      else if (status === 401) text = "Please login again";
+      else text = "Something went wrong";
+    }
+    const err = new Error(text);
+    err.status = status;
+    return Promise.reject(err);
+  }
+);

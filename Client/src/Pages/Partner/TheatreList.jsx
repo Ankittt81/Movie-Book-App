@@ -1,159 +1,100 @@
-import React, { useState, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { Button, Table, message } from "antd";
+import { EditOutlined } from "@ant-design/icons";
+import { getMyTheatres } from "../../apiCalls/theatres";
 import { hideLoading, showLoading } from "../../redux/loaderSlice";
-import { getAllTheatres } from "../../apiCalls/theatres";
-import { Button, message, Table } from "antd";
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import TheatreStatusTag from "../../components/TheatreStatusTag";
 import TheatreFormModal from "./TheatreFormModal";
-import DeleteTheatreModal from "./DeleteTheatreModal";
-import ShowModal from './ShowModal'
+import ShowModal from "./ShowModal";
+
 const TheatreList = () => {
-  const { user } = useSelector((state) => state.user);
-  console.log(user);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isShowModalOpen, setIsShowModalOpen] = useState(false);
-  const [selectedTheatre, setSelectedTheatre] = useState(null);
-  const [formType, setFormType] = useState("add");
-  const [theatres, SetTheatres] = useState(null);
+  const [theatres, setTheatres] = useState([]);
+  const [selected, setSelected] = useState(null);
+  const [formOpen, setFormOpen] = useState(false);
+  const [showsOpen, setShowsOpen] = useState(false);
   const dispatch = useDispatch();
 
-  const getData = async () => {
+  const loadTheatres = async () => {
     try {
       dispatch(showLoading());
-      const response = await getAllTheatres({ owner: user._id });
-      if (response.success) {
-        const allTheatres = response.data;
-
-        SetTheatres(
-          allTheatres.map(function (item) {
-            return { ...item, key: `theatre${item._id}` };
-          })
-        );
-      } else {
-        message.error(response.message);
-      }
-      dispatch(hideLoading());
+      const response = await getMyTheatres(0, 50);
+      setTheatres(response.data);
     } catch (err) {
-      dispatch(hideLoading());
       message.error(err.message);
+    } finally {
+      dispatch(hideLoading());
     }
   };
+
+  useEffect(() => {
+    loadTheatres();
+  }, []);
+
   const columns = [
-    {
-      title: "Name",
-      dataIndex: "name",
-      key: "name",
-    },
+    { title: "Name", dataIndex: "name" },
     {
       title: "Address",
-      dataIndex: "address",
-      key: "address",
+      render: (_, t) => `${t.address}, ${t.city}`,
     },
-    {
-      title: "Phone Number",
-      dataIndex: "phone",
-      key: "phone",
-    },
-    {
-      title: "Email",
-      dataIndex: "email",
-      key: "email",
-    },
+    { title: "Phone", dataIndex: "phone" },
+    { title: "Email", dataIndex: "email" },
     {
       title: "Status",
       dataIndex: "status",
-      render: (status, data) => {
-        if (data.isActive) {
-          return "Approved";
-        } else {
-          return "Pending/Blocked";
-        }
-      },
+      render: (status) => <TheatreStatusTag status={status} />,
     },
     {
       title: "Action",
-      dataIndex: "action",
-      render: (text, data) => {
-        return (
-          <div className="d-flex align-items-center gap-10">
+      render: (_, t) => (
+        <div className="d-flex align-items-center gap-10">
+          <Button
+            onClick={() => {
+              setSelected(t);
+              setFormOpen(true);
+            }}
+          >
+            <EditOutlined />
+          </Button>
+          {t.status === "ACTIVE" && (
             <Button
               onClick={() => {
-                setIsModalOpen(true);
-                setFormType("edit");
-                setSelectedTheatre(data);
+                setSelected(t);
+                setShowsOpen(true);
               }}
             >
-              <EditOutlined />
+              Shows
             </Button>
-            <Button
-              onClick={() => {
-                setIsDeleteModalOpen(true);
-                setSelectedTheatre(data);
-              }}
-            >
-              <DeleteOutlined />
-            </Button>
-            {data.isActive && (
-              <Button
-                onClick={() => {
-                  setIsShowModalOpen(true);
-                  setSelectedTheatre(data);
-                }}
-              >
-                + Shows
-              </Button>
-            )}
-          </div>
-        );
-      },
+          )}
+        </div>
+      ),
     },
   ];
 
-  useEffect(() => {
-    getData();
-  }, []);
-
   return (
     <>
-      <div className="d-flex justify-content-end">
+      <div className="d-flex justify-content-end mb-3">
         <Button
           type="primary"
           onClick={() => {
-            setIsModalOpen(true);
-            setFormType("add");
+            setSelected(null);
+            setFormOpen(true);
           }}
         >
           Add Theatre
         </Button>
       </div>
-      <Table dataSource={theatres} columns={columns} />
-      {isModalOpen && (
+
+      <Table rowKey="id" dataSource={theatres} columns={columns} />
+
+      {formOpen && (
         <TheatreFormModal
-          isModalOpen={isModalOpen}
-          selectedTheatre={selectedTheatre}
-          setSelectedTheatre={setSelectedTheatre}
-          setIsModalOpen={setIsModalOpen}
-          formType={formType}
-          getData={getData}
+          theatre={selected}
+          onClose={() => setFormOpen(false)}
+          onSaved={loadTheatres}
         />
       )}
-      {isDeleteModalOpen && (
-        <DeleteTheatreModal
-          isDeleteModalOpen={isDeleteModalOpen}
-          selectedTheatre={selectedTheatre}
-          setIsDeleteModalOpen={setIsDeleteModalOpen}
-          setSelectedTheatre={setSelectedTheatre}
-          getData={getData}
-        />
-      )}
-      {isShowModalOpen && (
-        <ShowModal
-          isShowModalOpen={isShowModalOpen}
-          setIsShowModalOpen={setIsShowModalOpen}
-          selectedTheatre={selectedTheatre}
-        />
-      )}
+      {showsOpen && <ShowModal theatre={selected} onClose={() => setShowsOpen(false)} />}
     </>
   );
 };

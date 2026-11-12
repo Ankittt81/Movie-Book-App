@@ -1,63 +1,32 @@
-
 import { axiosInstance } from "./index";
 
-
-export const addTheatre=async (payload)=>{
-    try {
-        const response = await axiosInstance.post(
-          "/theatre/add-theatre",payload
-        );
-        return response.data
-    } catch (err) {
-        return err.response
-    }
-}
-
-//Get all theatres for the Admin route
-
-export const getAllTheatresForAdmin = async () => {
-  try {
-    const response = await axiosInstance.get(
-      "/theatre/get-all-theatres");
-    return response.data;
-  } catch (err) {
-    return err.response;
-  }
+// partner
+export const createTheatre = async (payload) => {
+  const response = await axiosInstance.post("/theatres", payload);
+  return response.data;
 };
 
-//Get theatres of a specific owner
-export const getAllTheatres = async (payload) => {
-  try {
-    const response = await axiosInstance.post(
-      "/theatre/get-all-theatres-by-owner",
-      payload
-    );
-    return response.data;
-  } catch (err) {
-    return err.response;
-  }
+export const getMyTheatres = async (page = 0, pageSize = 50) => {
+  const response = await axiosInstance.get("/theatres/my", {
+    params: { page, pageSize },
+  });
+  return response.data;
 };
 
-//Update Theatre
-export const UpdateTheatre = async (payload) => {
-  try {
-    const response = await axiosInstance.put(
-      "/theatre/update-theatre",
-      payload
-    );
-    return response.data;
-  } catch (err) {
-    return err.response;
-  }
+export const updateTheatre = async (id, payload) => {
+  const response = await axiosInstance.put(`/theatres/${id}`, payload);
+  return response.data;
 };
 
-//Delete Theatre
-export const DeleteTheatre = async (theatreId) => {
-  try {
-    const response = await axiosInstance.delete(
-      `/theatre/delete-theatre/${theatreId}`);
-    return response.data;
-  } catch (err) {
-    return err.response;
-  }
+// admin
+export const getTheatresByStatus = async (status = "PENDING", page = 0, pageSize = 50) => {
+  const response = await axiosInstance.get("/admin/theatres", {
+    params: { status, page, pageSize },
+  });
+  return response.data;
+};
+
+export const changeTheatreStatus = async (id, status) => {
+  const response = await axiosInstance.put(`/admin/theatres/${id}/status`, { status });
+  return response.data;
 };

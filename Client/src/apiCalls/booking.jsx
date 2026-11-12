@@ -1,37 +1,23 @@
-import { axiosInstance } from "."
+import { axiosInstance } from ".";
 
+export const holdSeats = async (showId, seatLabels) => {
+  const response = await axiosInstance.post("/bookings/hold", { showId, seatLabels });
+  return response.data;
+};
 
+export const confirmBooking = async (bookingId) => {
+  const response = await axiosInstance.post(`/bookings/${bookingId}/confirm`);
+  return response.data;
+};
 
-export const makePayment=async (token,amount)=>{
-    try {
-      const response=await axiosInstance.post("/bookings/make-payment", {
-          token,
-          amount,
-        });
-        return response.data;
-    } catch (err) {
-        return err.response
-    }
-} 
+export const cancelBooking = async (bookingId) => {
+  const response = await axiosInstance.post(`/bookings/${bookingId}/cancel`);
+  return response.data;
+};
 
-export const bookShow=async(payload)=>{
-    try {
-        const response = await axiosInstance.post(
-          "/bookings/book-show",payload
-        );
-        return response.data
-    } catch (err) {
-        return err.response   
-    }
-}
-
-export const getAllBookings=async ()=>{
-    try {
-        const response = await axiosInstance.get(
-          "/bookings/get-all-bookings"
-        );
-        return response.data
-    } catch (err) {
-        return err.response        
-    }
-}
+export const getMyBookings = async (page = 0, pageSize = 10) => {
+  const response = await axiosInstance.get("/bookings/my", {
+    params: { page, pageSize },
+  });
+  return response.data;
+};

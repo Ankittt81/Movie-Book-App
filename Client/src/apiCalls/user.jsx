@@ -1,42 +1,22 @@
 import { axiosInstance } from ".";
 
-//Registration flow
-export const RegisterUser = async (values) => {
-  try {
-    const response = await axiosInstance.post(
-      "/users/register",
-      values
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+export const registerUser = async (values) => {
+  const response = await axiosInstance.post("/auth/register", values);
+  return response.data;
 };
 
-//Login
-export const LoginUser = async (values) => {
-  console.log(values);
-  try {
-    const response = await axiosInstance.post(
-      "/users/login",
-      values
-    );
-    return response.data;
-  } catch (error) {
-    console.log(error);
-  }
+// token arrives in the Authorization header, user in the body
+export const loginUser = async (values) => {
+  const response = await axiosInstance.post("/auth/login", values);
+  const bearer = response.headers.authorization || "";
+  return {
+    token: bearer.replace("Bearer ", ""),
+    user: response.data.data,
+    message: response.data.message,
+  };
 };
 
-//to get current or valid user
-
-export const GetCurrentUser=async ()=>{
-  try {
-    const response = await axiosInstance.get(
-      "/users/get-valid-user"
-    );
-    return response.data
-  } catch (error) {
-
-    console.log(error)
-  }
-}
+export const getCurrentUser = async () => {
+  const response = await axiosInstance.get("/auth/me");
+  return response.data;
+};

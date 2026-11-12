@@ -1,65 +1,28 @@
 import { axiosInstance } from "./index";
 
-
-//get all movies
-export const GetAllMovies = async ()=>{
-    try {
-        const response = await axiosInstance.get(
-          "/movies/get-all-movies"
-        );
-        return response.data
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-//add a movie
-export const addMovie=async(values)=>{
-    try {
-        const response = await axiosInstance.post(
-          "/movies/add-movie",values
-        );
-        return response.data
-    } catch (error) {
-        console.log(error)
-    }
-}
-
-//update movie
-
-export const updateMovie=async (payload)=>{
-    try {
-        const response = await axiosInstance.put(
-          "/movies/update-movie",payload
-        );
-        return response.data
-    } catch (err) {
-        return err.message
-    }
-}
-
-//Delete a movie
-
-export const deleteMovie = async (payload) => {
-  try {
-    const response = await axiosInstance.post(
-      "/movies/delete-movie",
-      payload
-    );
-    return response.data;
-  } catch (err) {
-    return err.message;
-  }
+export const getMovies = async ({ title = "", page = 0, pageSize = 50 } = {}) => {
+  const response = await axiosInstance.get("/movies", {
+    params: { title, page, pageSize },
+  });
+  return response.data;
 };
 
-//Get a single movie by its id
 export const getMovieById = async (id) => {
-  try {
-    const response = await axiosInstance.get(
-      `/movies/movie/${id}`
-    );
-    return response.data;
-  } catch (err) {
-    return err.response;
-  }
+  const response = await axiosInstance.get(`/movies/${id}`);
+  return response.data;
+};
+
+export const createMovie = async (payload) => {
+  const response = await axiosInstance.post("/movies", payload);
+  return response.data;
+};
+
+export const updateMovie = async (id, payload) => {
+  const response = await axiosInstance.put(`/movies/${id}`, payload);
+  return response.data;
+};
+
+export const deleteMovie = async (id) => {
+  const response = await axiosInstance.delete(`/movies/${id}`);
+  return response.data;
 };

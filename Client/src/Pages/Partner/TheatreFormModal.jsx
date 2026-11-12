@@ -1,159 +1,90 @@
-import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { showLoading,hideLoading } from "../../redux/loaderSlice";
-import { addTheatre, UpdateTheatre } from "../../apiCalls/theatres";
-import {Col,Modal,Row,Form,Input,Button,message} from 'antd'
-import TextArea from "antd/es/input/TextArea";
-const TheatreFormModal = ({
-  isModalOpen,
-  setIsModalOpen,
-  selectedTheatre,
-  setSelectedTheatre,
-  formType,
-  getData,
-}) => {
+import { useDispatch } from "react-redux";
+import { Button, Col, Form, Input, Modal, Row, message } from "antd";
+import { createTheatre, updateTheatre } from "../../apiCalls/theatres";
+import { hideLoading, showLoading } from "../../redux/loaderSlice";
+
+const { TextArea } = Input;
+
+// theatre = null means "add", otherwise "edit"
+const TheatreFormModal = ({ theatre, onClose, onSaved }) => {
   const dispatch = useDispatch();
-  const { user } = useSelector((state) => state.user);
+  const isEdit = !!theatre;
 
   const onFinish = async (values) => {
     try {
       dispatch(showLoading());
-      let response = null;
-      if (formType === "add") {
-        response = await addTheatre({ ...values, owner: user._id });
-        console.log(response);
-      } else {
-        values.theatreId = selectedTheatre._id;
-        response = await UpdateTheatre(values);
-      }
-      console.log(response);
-      if (response.success) {
-        getData();
-        message.success(response.message);
-        setIsModalOpen(false);
-      } else {
-        message.error(response.message);
-      }
-      dispatch(hideLoading());
-      setSelectedTheatre(null)
+      const response = isEdit
+        ? await updateTheatre(theatre.id, values)
+        : await createTheatre(values);
+      message.success(response.message);
+      onSaved();
+      onClose();
     } catch (err) {
-      dispatch(hideLoading());
       message.error(err.message);
+    } finally {
+      dispatch(hideLoading());
     }
-  };
-
-  const handleCancel = () => {
-    setIsModalOpen(false);
-    setSelectedTheatre(null);
   };
 
   return (
     <Modal
       centered
-      title={formType === "add" ? "Add Theatre" : "Edit Theatre"}
-      open={isModalOpen}
-      onCancel={handleCancel}
-      width={800}
+      open
+      title={isEdit ? "Edit Theatre" : "Add Theatre"}
+      onCancel={onClose}
       footer={null}
+      width={700}
     >
-      <Form
-        layout="vertical"
-        style={{ width: "100%" }}
-        initialValues={selectedTheatre}
-        onFinish={onFinish}
-      >
-        <Row
-          gutter={{
-            xs: 6,
-            sm: 10,
-            md: 12,
-            lg: 16,
-          }}
+      <Form layout="vertical" initialValues={theatre} onFinish={onFinish}>
+        <Form.Item
+          label="Theatre Name"
+          name="name"
+          rules={[{ required: true, message: "Theatre name is required!" }]}
         >
-          <Col span={24}>
+          <Input placeholder="Enter the theatre name" />
+        </Form.Item>
+        <Form.Item
+          label="Address"
+          name="address"
+          rules={[{ required: true, message: "Address is required!" }]}
+        >
+          <TextArea rows={3} placeholder="Enter the address" />
+        </Form.Item>
+        <Row gutter={16}>
+          <Col span={12}>
             <Form.Item
-              label="Theatre Name"
-              htmlFor="name"
-              name="name"
-              className="d-block"
-              rules={[{ required: true, message: "Theatre name is required!" }]}
+              label="City"
+              name="city"
+              rules={[{ required: true, message: "City is required!" }]}
             >
-              <Input
-                id="name"
-                type="text"
-                placeholder="Enter the theatre name"
-              ></Input>
+              <Input placeholder="Enter the city" />
             </Form.Item>
           </Col>
-          <Col span={24}>
+          <Col span={12}>
             <Form.Item
-              label="Theatre Address"
-              htmlFor="address"
-              name="address"
-              className="d-block"
-              rules={[{ required: true, message: "Theatre name is required!" }]}
+              label="Phone"
+              name="phone"
+              rules={[{ required: true, message: "Phone is required!" }]}
             >
-              <TextArea
-                id="address"
-                rows="3"
-                placeholder="Enter the theatre name"
-              ></TextArea>
+              <Input type="tel" placeholder="Enter the phone number" />
             </Form.Item>
-          </Col>
-          <Col span={24}>
-            <Row
-              gutter={{
-                xs: 6,
-                sm: 10,
-                md: 12,
-                lg: 16,
-              }}
-            >
-              <Col span={12}>
-                <Form.Item
-                  label="Email"
-                  htmlFor="email"
-                  name="email"
-                  className="d-block"
-                  rules={[{ required: true, message: "Email  is required!" }]}
-                >
-                  <Input
-                    id="email"
-                    type="email"
-                    placeholder="Enter the email"
-                  ></Input>
-                </Form.Item>
-              </Col>
-              <Col span={12}>
-                <Form.Item
-                  label="Phone Number"
-                  htmlFor="phone"
-                  name="phone"
-                  className="d-block"
-                  rules={[
-                    { required: true, message: "Phone number is required!" },
-                  ]}
-                >
-                  <Input
-                    id="phone"
-                    type="number"
-                    placeholder="Enter the phone number"
-                  ></Input>
-                </Form.Item>
-              </Col>
-            </Row>
           </Col>
         </Row>
+        <Form.Item
+          label="Email"
+          name="email"
+          rules={[
+            { required: true, message: "Email is required!" },
+            { type: "email", message: "Enter a valid email" },
+          ]}
+        >
+          <Input placeholder="Enter the email" />
+        </Form.Item>
         <Form.Item>
-          <Button
-            block
-            type="primary"
-            htmlType="submit"
-            style={{ fontSize: "1rem", fontWeight: "600" }}
-          >
-            Submit the Data
+          <Button block type="primary" htmlType="submit" style={{ fontWeight: 600 }}>
+            {isEdit ? "Save changes" : "Submit"}
           </Button>
-          <Button className="mt-3" block onClick={handleCancel}>
+          <Button className="mt-3" block onClick={onClose}>
             Cancel
           </Button>
         </Form.Item>

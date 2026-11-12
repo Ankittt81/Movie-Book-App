@@ -1,22 +1,14 @@
-import {Tabs} from 'antd'
-import Booking from './Bookings'
+import { Tabs } from "antd";
+import Bookings from "./Bookings";
 
-
-const User=()=> {
-  const items=[
-    {
-      key:'1',
-      label:'Bookings',
-      children:<Booking/>
-    }
-  ]
+const User = () => {
+  const items = [{ key: "1", label: "Bookings", children: <Bookings /> }];
   return (
     <>
-    <h1>User Profile Page</h1>
-    <Tabs defaultActiveKey='2' items={items}/>
+      <h1>My Profile</h1>
+      <Tabs defaultActiveKey="1" items={items} />
     </>
-    
-  )
-}
+  );
+};
 
-export default User
+export default User;

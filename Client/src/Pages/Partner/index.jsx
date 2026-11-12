@@ -2,17 +2,10 @@ import { Tabs } from "antd";
 import TheatreList from "./TheatreList";
 
 const Partner = () => {
-  const items = [
-    {
-      key: "1",
-      label: "Theatres",
-      children: <TheatreList/>,
-    },
-  ];
-
+  const items = [{ key: "1", label: "Theatres", children: <TheatreList /> }];
   return (
     <>
-      <h1> Partner Page</h1>
+      <h1>Partner Panel</h1>
       <Tabs defaultActiveKey="1" items={items} />
     </>
   );
