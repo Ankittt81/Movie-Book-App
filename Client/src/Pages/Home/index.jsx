@@ -55,6 +55,7 @@ const Home = () => {
     if (f.maxPrice) tags.push(`Under Rs. ${f.maxPrice}`);
     if (f.date) tags.push(moment(f.date).format("ddd, MMM D"));
     if (f.timeOfDay) tags.push(f.timeOfDay.toLowerCase());
+    if(f.maxDuration) tags.push(`Under ${f.maxDuration} mins`);
     return tags;
   };
 
